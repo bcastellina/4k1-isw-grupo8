@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Deliver Eat!</title>
+    <meta property="og:title" content="">
+    <link rel="icon" type="image/jpeg" sizes="245x168" href="assets/img/ISW_G8_logotipo.jpg">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya+Sans">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/Navigation-with-Button.css">
+</head>
+
+<body ng-app="DeliverEat" style="background-color: #FFE5E5;">
+    <nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button" style="background-color: #A42B36;">
+        <div class="container-fluid"><img class="img-fluid border rounded" style="background-image: url(&quot;assets/img/ISW_G8_logotipo.jpg&quot;);background-repeat: round;width: 40px;height: 40px;"><a class="navbar-brand" href="#" style="color: rgb(255,253,253);font-family: Adamina, serif;font-style: normal;font-weight: bold;font-size: 22px;">&nbsp;Deliver Eat!</a>
+            <button
+                data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse text-center" id="navcol-1">
+                    <ul class="nav navbar-nav mr-auto">
+                        <li class="nav-item" role="presentation"></li>
+                    </ul><span class="navbar-text actions"> <a class="btn btn-light action-button" role="button" href="#">Cerrar Sesión</a></span></div>
+        </div>
+    </nav>
+    <div class="container" ng-controller="pedidoComercioAdherido">
+        <div ng-show="estado === 'LA'" style="margin-top: 0px;padding-top: 0px;padding-bottom: 0px;">
+            <div class="row sticky-top" style="background-color: #ff8f90;padding-top: 15px;padding-bottom: 15px;">
+                <div class="col-4 col-md-2 col-xl-1 text-center text-lg-left align-self-center"><img class="img-fluid border rounded-circle" src="{{comercioSeleccionado.logo}}"></div>
+                <div class="col text-left align-self-center">
+                    <h3 class="text-left text-lg-left" style="font-family: Adamina, serif;font-size: 18px;">{{comercioSeleccionado.fantasia}}</h3>
+                </div>
+                <div class="col-xl-2 text-center d-none d-xl-block align-self-center"><button class="btn btn-success align-content-center" type="button" ng-click="mostrarCarrito()"><i class="fas fa-shopping-cart"></i> Total {{costoCarrito | currency:'$'}}
+</button></div>
+            </div>
+            <div class="row" style="background-color: #FFE5E5;">
+                <div class="col">
+                    <div>
+                        <table class="table">
+                            <tbody ng-init="prodCom = obtenerProductos()">
+                                <tr style="height: 110px;" ng-repeat="prod in prodCom">
+                                    <td style="height: 110px;">
+                                        <div class="row" style="height: 120px;">
+                                            <div class="col-3 col-xl-1"><img class="img-fluid" src="{{prod.imagen}}"></div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <p style="font-weight: bold;">{{prod.nombre}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <p style="font-size: 12px;">{{prod.descripcion}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-7 col-lg-9">
+                                                        <p>{{prod.precio | currency:'$'}}</p>
+                                                    </div>
+                                                    <div class="col-5 col-lg-3 text-center align-self-center"><button class="btn btn-success btn-sm" type="button" ng-click="addToCart(prod)">Agregar</button></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="border rounded d-xl-none position-fixed fixed-bottom" style="background-color: #565F81;">
+                <div class="row no-gutters">
+                    <div class="col text-center align-self-center"><button class="btn" type="button">{{cantidadArticulosCarrito}}<i class="fas fa-shopping-cart"></i></button></div>
+                    <div class="col align-self-center" style="font-weight: bold;">
+                        <p class="text-center" ng-click="mostrarCarrito()">Ver Carrito</p>
+                    </div>
+                    <div class="col align-self-center">
+                        <p class="text-center" style="font-weight: bold;">{{costoCarrito | currency:'$'}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pulse animated" ng-show="estado === 'MR'">
+            <div class="row" style="padding-top: 15px;background-color: #ff8f90;">
+                <div class="col-10">
+                    <h5 class="text-center">Tu Carrito!</h5>
+                </div>
+                <div class="col-2"><button class="close" ng-click="ocultarCarrito()"><span aria-hidden="true">×</span></button></div>
+            </div>
+            <div class="row" style="padding-top: 15px;background-color: #FFE5E5;">
+                <div class="col-4 col-md-2 col-xl-1 text-center align-self-center"><img class="img-fluid border rounded-circle" src="{{comercioSeleccionado.logo}}"></div>
+                <div class="col align-self-center">
+                    <div class="row">
+                        <div class="col">
+                            <h3 style="font-family: Adamina, serif;font-size: 18px;">{{comercioSeleccionado.fantasia}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col"><a ng-click="ocultarCarrito()" style="font-size: 14px;color: rgb(255,15,0);">Volver a la Tienda</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="cantidadArticulosCarrito !== 0" style="padding-top: 15px;background-color: #FFE5E5;">
+                <div class="col">
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="prod in carritoActual">
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-3"><img class="img-fluid" src="{{prod.item.imagen}}"></div>
+                                            <div class="col-4">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h4 style="font-size: 16px;font-weight: bold;">{{prod.item.nombre}}</h4>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <p>{{prod.item.precio | currency:'$'}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 col-md-2 text-center align-self-center"><button class="btn btn-light btn-sm" type="button" ng-click="modifyProduct(prod, prod.quant - 1)" style="width: 18px;padding-left: 4px;padding-right: 4px;">-</button><input class="border rounded-0 shadow-none form-control-sm"
+                                                    type="text" value="{{prod.quant}}" maxlength="2" style="max-width: 35px;text-align:center;"><button class="btn btn-light btn-sm" type="button" ng-click="modifyProduct(prod, prod.quant + 1)" style="width: 18px;padding-right: 4px;padding-left: 4px;">+</button></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="cantidadArticulosCarrito === 0" style="padding-top: 15px;background-color: #FFE5E5;">
+                <div class="col text-center align-self-center"><p>Tu carrito se encuenta vacío <i class="far fa-frown"></i></p></div>
+            </div>
+            <div class="row" style="padding-bottom: 10px;background-color: #FFE5E5;">
+                <div class="col text-center"><button class="btn btn-{{cantidadArticulosCarrito !== 0 ? 'primary' : 'secondary'}}" type="button" ng-disabled="cantidadArticulosCarrito === 0" ng-click="confirmCart()">Ir a pagar</button></div>
+            </div>
+        </div>
+    </div>
+    <div ng-controller="checkout" style="padding-left: 5px;padding-right: 5px;">
+        <form ng-show="estado === 'MC'" novalidate="" name="formCheckout">
+            <div class="form-row" style="background-color: #ff8f90;padding-top: 15px;padding-bottom: 10px;">
+                <div class="col-11">
+                    <h6 class="text-center">Confirmar pedido</h6>
+                </div>
+                <div class="col"><button class="close" ng-click="volverComercio(false)"><span aria-hidden="true">×</span></button></div>
+            </div>
+            <div class="form-group" style="padding-top: 10px;">
+                <div class="form-row">
+                    <div class="col-4 text-center align-self-center"><img class="img-fluid border rounded-circle" src="{{comercio.logo}}"></div>
+                    <div class="col">
+                        <div class="form-row">
+                            <div class="col">
+                                <p style="font-size: 18px;font-family: Adamina, serif;">{{comercio.fantasia}}</p>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <p>Total {{montoCarrito | currency:'$'}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" style="padding-left: 5px;padding-right: 5px;">
+                <h6>Dirección de Entrega</h6>
+                <p>Ciudad<select class="form-control form-control-sm" ng-model="datosEntrega.direccion.ciudad" ng-required="true"><option value="cordoba">Córdoba</option><option value="rosario">Rosario</option><option value="capfed">Capital Federal</option><option value="mendoza">Mendoza</option></select></p>
+                <p>Dirección (calle y número)<input class="form-control form-control-sm" type="text" ng-model="datosEntrega.direccion.direccion" ng-required="true"></p>
+                <p>Referencia (opcional)<input class="form-control form-control-sm" type="text" ng-model="datosEntrega.direccion.referencia"></p>
+            </div>
+            <div class="form-group" style="padding-right: 5px;padding-left: 5px;">
+                <div class="form-row">
+                    <div class="col-5">
+                        <div class="form-row">
+                            <div class="col">
+                                <h6>Tipo de Entrega:</h6>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col text-center"><a href="#tipoEntrega" data-toggle="modal" style="color: #565F81;">(cambiar)</a></div>
+                        </div>
+                    </div>
+                    <div class="col text-right">
+                        <p class="text-left">{{datosEntrega.tipo.value === 'antesposible' ? 'Lo antes posible' : 'Programado'}}&nbsp;</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" style="padding-right: 5px;padding-left: 5px;">
+                <div class="form-row">
+                    <div class="col-5">
+                        <div class="form-row">
+                            <div class="col">
+                                <h6>Forma de Pago:</h6>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col text-center"><a href="#formaPago" data-toggle="modal" style="color: #565F81;">(cambiar)</a></div>
+                        </div>
+                    </div>
+                    <div class="col text-right">
+                        <p class="text-left">{{formaPago.value === "cash" ? "Efectivo ( $ " + formaPago.data.cantidad + " )" : "Pago con " + formaPago.data.red + "&nbsp; terminada en " + formaPago.data.number.substr(-4)}}&nbsp;</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group text-center"><button class="btn {{formCheckout.$valid &amp;&amp; formPago.$valid &amp;&amp; formEntrega.$valid ? 'btn-success' : 'btn-secondary'}}" type="button" ng-click="confirmCheckout()" ng-disabled="formCheckout.$invalid || formPago.$invalid || formEntrega.$invalid">Confirmar Pedido</button></div>
+        </form>
+        <div class="d-block justify-content-center align-items-center rubberBand animated" ng-show="estado === 'PC'">
+            <div class="row">
+                <div class="col text-center align-self-center"><p style="font-size: 90px;"><i class="far fa-check-circle" style="color:green;"></i></p></div>
+                <div class="col text-center align-self-center">
+                    <h4 class="text-center">{{datosEntrega.tipo.value === "antesposible" ? "¡Tu pedido está en camino!" : "¡Tu pedido ya fue programado!"}}</h4>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 15px;">
+                <div class="col text-center"><button class="btn btn-success btn-sm border rounded" type="button" style="width: 150px;" ng-click="volverComercio(true)">Volver al Comercio</button></div>
+            </div>
+        </div>
+        <div class="modal fade" role="dialog" tabindex="-1" id="formaPago">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center">
+                        <h5 class="modal-title">Forma de pago</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display:none;"><span aria-hidden="true">×</span></button></div>
+                    <div class="modal-body">
+                        <form name="formPago">
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="btn-group"><button class="btn btn-outline-danger" type="button" data-toggle="dropdown">{{formaPago.value === undefined ? 'Selecciona la forma de Pago' : formaPago.value === 'cash' ? 'Efectivo' : 'Pago con Visa'}}</button>
+                                        <button
+                                            class="btn btn-outline-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" type="button"></button>
+                                            <div class="dropdown-menu" role="menu"><a role="presentation" class="dropdown-item" href="#" ng-click="setFormaPago('cash')"><i class="far fa-money-bill-alt"></i> Efectivo</a><a role="presentation" class="dropdown-item" href="#" ng-click="setFormaPago('card')"><i class="fab fa-cc-visa"></i> Pago con Visa</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row" ng-show="formaPago.value === 'cash'">
+                                <div class="col"><label class="col-form-label">Monto a Pagar:</label></div>
+                                <div class="col text-left align-self-center" style="padding-left: 0px;"><input class="form-control form-control-sm {{formPago.cantidad.$error.required ? 'border-danger' : ''}}" type="text" ng-model="formaPago.data.cantidad" name="cantidad" ng-required="formaPago.value === 'cash'"></div>
+                            </div>
+                            <div class="form-row" ng-show="formaPago.value === 'card'">
+                                <div class="col">
+                                    <div class="form-row">
+                                        <div class="col"><label>Número de Tarjeta:&nbsp;</label><input class="border rounded form-control form-control-sm {{formPago.cardNumber.$error.required || formPago.cardNumber.$invalid || !result.valid ? 'border-danger' : ''}}" type="text"
+                                                ng-model="card_details.number" maxlength="{{result.data.longitud !== undefined ? result.data.longitud : 16}}" ng-keypress="validarNumero($event)" ng-change="changePAN()" name="cardNumber" ng-required="formaPago.value === 'card'"
+                                                minlength="{{result.data.longitud !== undefined ? result.data.longitud : 16}}" ng-model-options="{ allowInvalid:true }"><label class="text-{{result.valid ? 'secondary' : 'danger'}}" style="font-size: 12px;padding-top: 0px;padding-bottom: 0px;">{{card_details.red.toUpperCase() + (card_details.banco !== undefined ? ' - ' + card_details.banco : '')}}</label></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col"><label>Titular:&nbsp;&nbsp;</label><input class="border rounded form-control form-control-sm {{formCheckout.owner.$error.required ? 'border-danger' : ''}}" type="text" ng-model="card_details.owner" name="owner"
+                                                ng-required="formaPago.value === 'card'" placeholder="Nombre y Apellido"></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-7"><label>Vencimiento:&nbsp;&nbsp;</label><input class="form-control form-control-sm {{formPago.expiration.$error.required ? 'border-danger' : ''}}" type="text" ng-model="card_details.expiration" ng-keypress="validarNumero($event, true)"
+                                                maxlength="7" ng-keydown="changeExpiration($event)" name="expiration" ng-required="formaPago.value === 'card'" placeholder="mm/aaaa" ng-change="validarExpiracion()" style="width: 90px;"></div>
+                                        <div class="col"><label>CVV:&nbsp;&nbsp;</label><input class="form-control form-control-sm {{formPago.cvv.$error.required ? 'border-danger' : ''}}" type="password" style="width: 60px;" ng-model="card_details.cvv" maxlength="{{formaPago.datos.red === 'amex' ? 4 : 3}}"
+                                                name="cvv" ng-required="formaPago.value === 'card'" placeholder="***"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer"><button class="btn {{formPago.$valid ? 'btn-success' : 'btn-secondary'}}" type="button" ng-click="confirmFP()" data-dismiss="modal" ng-disabled="formPago.$invalid">Confirmar</button></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" role="dialog" tabindex="-1" id="tipoEntrega">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center">
+                        <h5 class="modal-title text-center">Tipo de Entrega</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display:none;"><span aria-hidden="true">×</span></button></div>
+                    <div class="modal-body">
+                        <form name="formEntrega">
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-1" value="antesposible" name="entrega" ng-model="datosEntrega.tipo.value" ng-checked="datosEntrega.tipo.value"><label class="form-check-label" for="formCheck-1">Lo antes posible</label></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-2" name="entrega" value="programado" ng-model="datosEntrega.tipo.value" ng-change="programandoEntrega()" ng-checked="datosEntrega.tipo.value"><label class="form-check-label"
+                                            for="formCheck-2">Programar Entrega</label></div>
+                                </div>
+                            </div>
+                            <div class="form-row" ng-show="datosEntrega.tipo.value === 'programado'">
+                                <div class="col-6 text-center"><input class="form-control form-control-sm" type="date" style="width: 155px;" ng-model="datosEntrega.tipo.datos.dia" ng-required="datosEntrega.tipo.value === 'programado'"></div>
+                                <div class="col-6 text-center"><select class="form-control form-control-sm" ng-model="datosEntrega.tipo.datos.hora" ng-required="datosEntrega.tipo.value === 'programado'"><option value="0">0:00-00:30 hs</option><option value="1">0:30-1:00 hs</option><option value="2">1:00-1:30 hs</option><option value="3">1:30-2:00 hs</option><option value="4">2:00-2:30 hs</option><option value="5">3:00-3:30 hs</option><option value="6">3:30-4:00 hs</option><option value="7">4:00-4:30 hs</option><option value="8">4:30-5:00 hs</option><option value="9">5:00-5:30 hs</option><option value="10">5:30-6:00 hs</option><option value="11">6:00-6:30 hs</option><option value="12">6:30-7:00 hs</option><option value="13">7:00-7:30 hs</option><option value="14">7:30-8:00 hs</option><option value="15">8:00-8:30 hs</option><option value="16">8:30-9:00 hs</option><option value="17">9:00-9:30 hs</option><option value="18">9:30-10:00 hs</option><option value="19">10:00-10:30 hs</option><option value="20">10:30-11:00 hs</option><option value="21">11:00-11:30 hs</option><option value="22">11:30-12:00 hs</option><option value="23">12:00-12:30 hs</option><option value="24">12:30-13:00 hs</option><option value="25">13:00-13:30 hs</option><option value="26">13:30-14:00 hs</option><option value="27">14:00-14:30 hs</option><option value="28">14:30-15:00 hs</option><option value="29">15:00-15:30 hs</option><option value="30">15:30-16:00 hs</option><option value="31">16:00-16:30 hs</option><option value="32">16:30-17:00 hs</option><option value="33">17:00-17:30 hs</option><option value="34">17:30-18:00 hs</option><option value="35">18:00-18:30 hs</option><option value="36">18:30-19:00 hs</option><option value="37">19:00-19:30 hs</option><option value="38">19:30-20:00 hs</option><option value="39">20:00-20:30 hs</option><option value="40">20:30-21:00 hs</option><option value="41">21:00-21:30 hs</option><option value="42">21:30-22:00 hs</option><option value="43">22:00-22:30 hs</option><option value="44">22:30-23:00 hs</option><option value="45">23:00-23:30 hs</option><option value="46">23:30-0:00 hs</option></select></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer"><button class="btn {{formEntrega.$valid ? 'btn-success' : 'btn-secondary'}}" type="button" data-dismiss="modal" ng-disabled="formEntrega.$invalid">Confirmar</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script src="assets/js/ISW_G8_code.js"></script>
+</body>
+
+</html>
