@@ -224,7 +224,7 @@
                 <div class="col text-center"><button class="btn btn-success btn-sm border rounded" type="button" style="width: 150px;" ng-click="volverComercio(true)">Volver al Comercio</button></div>
             </div>
         </div>
-        <div class="modal fade" role="dialog" tabindex="-1" id="formaPago">
+        <div class="modal fade" role="dialog" tabindex="-1" id="formaPago" novalidate="">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header justify-content-center">
@@ -242,7 +242,8 @@
                             </div>
                             <div class="form-row" ng-show="formaPago.value === 'cash'">
                                 <div class="col"><label class="col-form-label">Monto a Pagar:</label></div>
-                                <div class="col text-left align-self-center" style="padding-left: 0px;"><input class="form-control form-control-sm {{formPago.cantidad.$error.required ? 'border-danger' : ''}}" type="text" ng-model="formaPago.data.cantidad" name="cantidad" ng-required="formaPago.value === 'cash'"></div>
+                                <div class="col text-left align-self-center" style="padding-left: 0px;"><input class="form-control form-control-sm {{formPago.cantidad.$invalid || formPago.cantidad.$error.required ? 'border-danger' : ''}}" type="text" ng-model="formaPago.data.cantidad" name="cantidad" ng-required="formaPago.value === 'cash'"
+                                        ng-change="validarImporteEfectivo()"></div>
                             </div>
                             <div class="form-row" ng-show="formaPago.value === 'card'">
                                 <div class="col">
@@ -259,7 +260,7 @@
                                         <div class="col-7"><label>Vencimiento:&nbsp;&nbsp;</label><input class="form-control form-control-sm {{formPago.expiration.$error.required ? 'border-danger' : ''}}" type="text" ng-model="card_details.expiration" ng-keypress="validarNumero($event, true)"
                                                 maxlength="7" ng-keydown="changeExpiration($event)" name="expiration" ng-required="formaPago.value === 'card'" placeholder="mm/aaaa" ng-change="validarExpiracion()" style="width: 90px;"></div>
                                         <div class="col"><label>CVV:&nbsp;&nbsp;</label><input class="form-control form-control-sm {{formPago.cvv.$error.required ? 'border-danger' : ''}}" type="password" style="width: 60px;" ng-model="card_details.cvv" maxlength="{{formaPago.datos.red === 'amex' ? 4 : 3}}"
-                                                name="cvv" ng-required="formaPago.value === 'card'" placeholder="***"></div>
+                                                name="cvv" ng-required="formaPago.value === 'card'" placeholder="***" minlength="3"></div>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +276,7 @@
                     <div class="modal-header justify-content-center">
                         <h5 class="modal-title text-center">Tipo de Entrega</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display:none;"><span aria-hidden="true">×</span></button></div>
                     <div class="modal-body">
-                        <form name="formEntrega">
+                        <form name="formEntrega" novalidate="">
                             <div class="form-row">
                                 <div class="col">
                                     <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-1" value="antesposible" name="entrega" ng-model="datosEntrega.tipo.value" ng-checked="datosEntrega.tipo.value"><label class="form-check-label" for="formCheck-1">Lo antes posible</label></div>
@@ -288,15 +289,16 @@
                                 </div>
                             </div>
                             <div class="form-row" ng-show="datosEntrega.tipo.value === 'programado'">
-                                <div class="col-6 text-center"><input class="form-control form-control-sm" type="date" style="width: 155px;" ng-model="datosEntrega.tipo.datos.dia" ng-required="datosEntrega.tipo.value === 'programado'"></div>
-                                <div class="col-6 text-center"><select class="form-control form-control-sm" ng-model="datosEntrega.tipo.datos.hora" ng-required="datosEntrega.tipo.value === 'programado'"><option value="0">0:00-00:30 hs</option><option value="1">0:30-1:00 hs</option><option value="2">1:00-1:30 hs</option><option value="3">1:30-2:00 hs</option><option value="4">2:00-2:30 hs</option><option value="5">3:00-3:30 hs</option><option value="6">3:30-4:00 hs</option><option value="7">4:00-4:30 hs</option><option value="8">4:30-5:00 hs</option><option value="9">5:00-5:30 hs</option><option value="10">5:30-6:00 hs</option><option value="11">6:00-6:30 hs</option><option value="12">6:30-7:00 hs</option><option value="13">7:00-7:30 hs</option><option value="14">7:30-8:00 hs</option><option value="15">8:00-8:30 hs</option><option value="16">8:30-9:00 hs</option><option value="17">9:00-9:30 hs</option><option value="18">9:30-10:00 hs</option><option value="19">10:00-10:30 hs</option><option value="20">10:30-11:00 hs</option><option value="21">11:00-11:30 hs</option><option value="22">11:30-12:00 hs</option><option value="23">12:00-12:30 hs</option><option value="24">12:30-13:00 hs</option><option value="25">13:00-13:30 hs</option><option value="26">13:30-14:00 hs</option><option value="27">14:00-14:30 hs</option><option value="28">14:30-15:00 hs</option><option value="29">15:00-15:30 hs</option><option value="30">15:30-16:00 hs</option><option value="31">16:00-16:30 hs</option><option value="32">16:30-17:00 hs</option><option value="33">17:00-17:30 hs</option><option value="34">17:30-18:00 hs</option><option value="35">18:00-18:30 hs</option><option value="36">18:30-19:00 hs</option><option value="37">19:00-19:30 hs</option><option value="38">19:30-20:00 hs</option><option value="39">20:00-20:30 hs</option><option value="40">20:30-21:00 hs</option><option value="41">21:00-21:30 hs</option><option value="42">21:30-22:00 hs</option><option value="43">22:00-22:30 hs</option><option value="44">22:30-23:00 hs</option><option value="45">23:00-23:30 hs</option><option value="46">23:30-0:00 hs</option></select></div>
-                            </div>
-                        </form>
+                                <div class="col-6 text-center"><input class="form-control form-control-sm" type="date" style="width: 155px;" ng-model="datosEntrega.tipo.datos.dia" ng-required="datosEntrega.tipo.value === 'programado'" ng-change="validarFechaProgramada()" name="fechaEntrega"></div>
+                                <div
+                                    class="col-6 text-center"><select class="form-control form-control-sm" ng-model="datosEntrega.tipo.datos.hora" ng-required="datosEntrega.tipo.value === 'programado'" name="horaEntrega" ng-change="validarFechaProgramada()"><option value="0">0:00-00:30 hs</option><option value="1">0:30-1:00 hs</option><option value="2">1:00-1:30 hs</option><option value="3">1:30-2:00 hs</option><option value="4">2:00-2:30 hs</option><option value="5">2:30-3:00 hs</option><option value="6">3:00-3:30 hs</option><option value="7">3:30-4:00 hs</option><option value="8">4:00-4:30 hs</option><option value="9">4:30-5:00 hs</option><option value="10">5:00-5:30 hs</option><option value="11">5:30-6:00 hs</option><option value="12">6:00-6:30 hs</option><option value="13">6:30-7:00 hs</option><option value="14">7:00-7:30 hs</option><option value="15">7:30-8:00 hs</option><option value="16">8:00-8:30 hs</option><option value="17">8:30-9:00 hs</option><option value="18">9:00-9:30 hs</option><option value="19">9:30-10:00 hs</option><option value="20">10:00-10:30 hs</option><option value="21">10:30-11:00 hs</option><option value="22">11:00-11:30 hs</option><option value="23">11:30-12:00 hs</option><option value="24">12:00-12:30 hs</option><option value="25">12:30-13:00 hs</option><option value="26">13:00-13:30 hs</option><option value="27">13:30-14:00 hs</option><option value="28">14:00-14:30 hs</option><option value="29">14:30-15:00 hs</option><option value="30">15:00-15:30 hs</option><option value="31">15:30-16:00 hs</option><option value="32">16:00-16:30 hs</option><option value="33">16:30-17:00 hs</option><option value="34">17:00-17:30 hs</option><option value="35">17:30-18:00 hs</option><option value="36">18:00-18:30 hs</option><option value="37">18:30-19:00 hs</option><option value="38">19:00-19:30 hs</option><option value="39">19:30-20:00 hs</option><option value="40">20:00-20:30 hs</option><option value="41">20:30-21:00 hs</option><option value="42">21:00-21:30 hs</option><option value="43">21:30-22:00 hs</option><option value="44">22:00-22:30 hs</option><option value="45">22:30-23:00 hs</option><option value="46">23:00-23:30 hs</option><option value="47">23:30-0:00 hs</option></select></div>
                     </div>
-                    <div class="modal-footer"><button class="btn {{formEntrega.$valid ? 'btn-success' : 'btn-secondary'}}" type="button" data-dismiss="modal" ng-disabled="formEntrega.$invalid">Confirmar</button></div>
+                    </form>
                 </div>
+                <div class="modal-footer"><button class="btn {{formEntrega.$valid ? 'btn-success' : 'btn-secondary'}}" type="button" data-dismiss="modal" ng-disabled="formEntrega.$invalid">Confirmar</button></div>
             </div>
         </div>
+    </div>
     </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

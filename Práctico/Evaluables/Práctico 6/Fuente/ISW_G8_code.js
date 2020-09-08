@@ -490,7 +490,7 @@ module.controller("checkout", function ( $scope, $http, $rootScope ) {
     
     $scope.validarExpiracion = function () {
         //Valido que sea una fecha válida
-        let result_regx = new RegExp( "/((0[1-9])|(1[0-2]))\/[0-9]{4}/" ).test( $scope.card_details.expiration );
+        let result_regx = new RegExp( "((0[1-9])|(1[0-2]))\/[0-9]{4}" ).test( $scope.card_details.expiration );
         
         if ( result_regx ) {
             let mes = $scope.card_details.expiration.substr( 0, 2 ),
@@ -498,12 +498,35 @@ module.controller("checkout", function ( $scope, $http, $rootScope ) {
                 fecha_actual = new Date();
             
             if ( new Date( año, mes - 1, fecha_actual.getDate() ) < fecha_actual ) {
-                $scope.formPago.expiration.$error.required = true;
+                $scope.formPago.expiration.$setValidity( "required", false);
             }
-            $scope.formPago.expiration.$error.pattern = undefined;
+            $scope.formPago.expiration.$setValidity( "required", true);
         }
         else {
-            $scope.formPago.expiration.$error.pattern = true;
+            $scope.formPago.expiration.$setValidity( "required", false);
+        }
+    }
+
+    $scope.validarImporteEfectivo = function () {
+        if ( ( $scope.formaPago.data.cantidad ?? -1 ) < $scope.montoCarrito) {
+            $scope.formPago.cantidad.$setValidity( "required", false);
+        }
+        else {
+            $scope.formPago.cantidad.$setValidity( "required", true);
+        }
+    }
+
+    $scope.validarFechaProgramada = function() {
+        let min_day = $scope.datosEntrega.tipo.datos.hora * 30,
+            hour = Math.trunc(min_day / 60),
+            minute = ((min_day / 60) - hour).toFixed(2)*60;
+        if ($scope.datosEntrega.tipo.datos.dia.setHours(hour, minute) < new Date()) {
+            $scope.formEntrega.fechaEntrega.$setValidity( "required", false);
+            $scope.formEntrega.horaEntrega.$setValidity( "required", false);
+        }
+        else {
+            $scope.formEntrega.fechaEntrega.$setValidity( "required", true);
+            $scope.formEntrega.horaEntrega.$setValidity( "required", true);
         }
     }
 
@@ -517,11 +540,11 @@ module.controller("checkout", function ( $scope, $http, $rootScope ) {
                 $scope.card_details.red = res.data.red;
                 $scope.card_details.banco = res.data.banco;
                 //Valido que la tarjeta sea efectivamente visa
-                if ( !$scope.result.valid ){
-                    $("input[name='cardNumber']")[0].setCustomValidity("La tarjeta no es visa");
+                if ( !$scope.result.valid ) {
+                    $scope.formPago.cardNumber.$setValidity( "required", true);
                 }
-                else{
-                    $("input[name='cardNumber']")[0].setCustomValidity("");
+                else {
+                    $scope.formPago.cardNumber.$setValidity( "required", false);
                 }
 
                 console.log( $scope.result );
